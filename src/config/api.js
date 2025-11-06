@@ -1,4 +1,4 @@
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+export const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 const ENVIRONMENT = process.env.REACT_APP_ENVIRONMENT || 'development';
 
 export const config = {

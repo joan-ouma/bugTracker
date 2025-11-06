@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { API_URL } from '../config/api';
 
 const BugForm = ({ onBugCreated, projects = [] }) => {
@@ -25,7 +24,7 @@ const BugForm = ({ onBugCreated, projects = [] }) => {
         estimatedHours: '',
         actualHours: '',
         tags: [],
-        reporter: 'current-user', //comes from AuthContext
+        reporter: 'current-user',
         assignee: ''
     });
 
@@ -34,7 +33,6 @@ const BugForm = ({ onBugCreated, projects = [] }) => {
     const [success, setSuccess] = useState('');
     const [newTag, setNewTag] = useState('');
 
-    // Mock projects data
     const mockProjects = [
         { _id: '1', name: 'Website Redesign', key: 'WEB' },
         { _id: '2', name: 'Mobile App', key: 'MOB' },
@@ -42,7 +40,6 @@ const BugForm = ({ onBugCreated, projects = [] }) => {
         { _id: '4', name: 'Database Optimization', key: 'DB' }
     ];
 
-    // Mock users for assignment
     const mockUsers = [
         { _id: '1', name: 'John Developer', role: 'developer' },
         { _id: '2', name: 'Sarah Tester', role: 'tester' },
@@ -141,18 +138,10 @@ const BugForm = ({ onBugCreated, projects = [] }) => {
         setSuccess('');
 
         try {
-            // Validate required fields
-            if (!formData.title.trim()) {
-                throw new Error('Title is required');
-            }
-            if (!formData.description.trim()) {
-                throw new Error('Description is required');
-            }
-            if (!formData.project) {
-                throw new Error('Please select a project');
-            }
+            if (!formData.title.trim()) throw new Error('Title is required');
+            if (!formData.description.trim()) throw new Error('Description is required');
+            if (!formData.project) throw new Error('Please select a project');
 
-            // Filter out empty steps
             const filteredSteps = formData.stepsToReproduce.filter(step => step.trim() !== '');
 
             const submitData = {
@@ -163,14 +152,11 @@ const BugForm = ({ onBugCreated, projects = [] }) => {
                 dueDate: formData.dueDate || undefined
             };
 
-            // ✅ This already uses API_URL from import - Good!
             console.log('🐛 [BUG FORM] Creating bug at:', `${API_URL}/api/bugs`);
 
             const response = await fetch(`${API_URL}/api/bugs`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(submitData),
             });
 
@@ -180,11 +166,9 @@ const BugForm = ({ onBugCreated, projects = [] }) => {
             }
 
             const newBug = await response.json();
-            console.log('✅ [BUG FORM] Bug created successfully:', newBug);
             onBugCreated(newBug);
             setSuccess('Bug reported successfully!');
 
-            // Reset form
             setFormData({
                 title: '',
                 description: '',
@@ -196,12 +180,7 @@ const BugForm = ({ onBugCreated, projects = [] }) => {
                 stepsToReproduce: [''],
                 expectedBehavior: '',
                 actualBehavior: '',
-                environment: {
-                    os: '',
-                    browser: '',
-                    device: '',
-                    version: ''
-                },
+                environment: { os: '', browser: '', device: '', version: '' },
                 attachments: [],
                 dueDate: '',
                 estimatedHours: '',
@@ -211,7 +190,6 @@ const BugForm = ({ onBugCreated, projects = [] }) => {
                 assignee: ''
             });
 
-            // Clear success message after 3 seconds
             setTimeout(() => setSuccess(''), 3000);
 
         } catch (err) {
@@ -234,12 +212,7 @@ const BugForm = ({ onBugCreated, projects = [] }) => {
             stepsToReproduce: [''],
             expectedBehavior: '',
             actualBehavior: '',
-            environment: {
-                os: '',
-                browser: '',
-                device: '',
-                version: ''
-            },
+            environment: { os: '', browser: '', device: '', version: '' },
             attachments: [],
             dueDate: '',
             estimatedHours: '',
@@ -257,16 +230,21 @@ const BugForm = ({ onBugCreated, projects = [] }) => {
             <div className="bg-white rounded-xl shadow-sm border border-gray-200">
                 <div className="px-6 py-4 border-b border-gray-200">
                     <h2 className="text-xl font-semibold text-gray-900">Report New Bug</h2>
-                    <p className="text-sm text-gray-600 mt-1">Fill in all the details below to report a new bug</p>
+                    <p className="text-sm text-gray-600 mt-1">
+                        Fill in all the details below to report a new bug
+                    </p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="p-6 space-y-8">
-                    {/* Status Messages */}
                     {error && (
                         <div className="bg-red-50 border border-red-200 rounded-lg p-4">
                             <div className="flex items-center">
                                 <svg className="w-5 h-5 text-red-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                                    <path
+                                        fillRule="evenodd"
+                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                                        clipRule="evenodd"
+                                    />
                                 </svg>
                                 <p className="text-red-800 text-sm">{error}</p>
                             </div>
@@ -277,22 +255,23 @@ const BugForm = ({ onBugCreated, projects = [] }) => {
                         <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                             <div className="flex items-center">
                                 <svg className="w-5 h-5 text-green-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                    <path
+                                        fillRule="evenodd"
+                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                        clipRule="evenodd"
+                                    />
                                 </svg>
                                 <p className="text-green-800 text-sm">{success}</p>
                             </div>
                         </div>
                     )}
 
-                    {/* Section 1: Basic Information */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         <div className="space-y-6">
                             <h3 className="text-lg font-medium text-gray-900 border-b pb-2">Basic Information</h3>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Project *
-                                </label>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Project *</label>
                                 <select
                                     name="project"
                                     value={formData.project}
@@ -301,18 +280,16 @@ const BugForm = ({ onBugCreated, projects = [] }) => {
                                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 >
                                     <option value="">Select a project</option>
-                                    {mockProjects.map(project => (
-                                        <option key={project._id} value={project._id}>
-                                            {project.name} ({project.key})
+                                    {mockProjects.map(p => (
+                                        <option key={p._id} value={p._id}>
+                                            {p.name} ({p.key})
                                         </option>
                                     ))}
                                 </select>
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Bug Title *
-                                </label>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Bug Title *</label>
                                 <input
                                     type="text"
                                     name="title"
@@ -325,9 +302,7 @@ const BugForm = ({ onBugCreated, projects = [] }) => {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Description *
-                                </label>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Description *</label>
                                 <textarea
                                     name="description"
                                     value={formData.description}
@@ -345,9 +320,7 @@ const BugForm = ({ onBugCreated, projects = [] }) => {
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Type
-                                    </label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">Type</label>
                                     <select
                                         name="type"
                                         value={formData.type}
@@ -362,9 +335,7 @@ const BugForm = ({ onBugCreated, projects = [] }) => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Status
-                                    </label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
                                     <select
                                         name="status"
                                         value={formData.status}
@@ -381,9 +352,7 @@ const BugForm = ({ onBugCreated, projects = [] }) => {
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Priority
-                                    </label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">Priority</label>
                                     <select
                                         name="priority"
                                         value={formData.priority}
@@ -398,9 +367,7 @@ const BugForm = ({ onBugCreated, projects = [] }) => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Severity
-                                    </label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">Severity</label>
                                     <select
                                         name="severity"
                                         value={formData.severity}
@@ -415,9 +382,7 @@ const BugForm = ({ onBugCreated, projects = [] }) => {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Assign To
-                                </label>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Assign To</label>
                                 <select
                                     name="assignee"
                                     value={formData.assignee}
@@ -435,9 +400,7 @@ const BugForm = ({ onBugCreated, projects = [] }) => {
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Due Date
-                                    </label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">Due Date</label>
                                     <input
                                         type="date"
                                         name="dueDate"
@@ -448,9 +411,7 @@ const BugForm = ({ onBugCreated, projects = [] }) => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Estimated Hours
-                                    </label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">Estimated Hours</label>
                                     <input
                                         type="number"
                                         name="estimatedHours"
@@ -466,7 +427,6 @@ const BugForm = ({ onBugCreated, projects = [] }) => {
                         </div>
                     </div>
 
-                    {/* Section 2: Behavior Details */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         <div className="space-y-6">
                             <h3 className="text-lg font-medium text-gray-900 border-b pb-2">Expected Behavior</h3>
@@ -493,15 +453,14 @@ const BugForm = ({ onBugCreated, projects = [] }) => {
                         </div>
                     </div>
 
-                    {/* Section 3: Steps to Reproduce */}
                     <div className="space-y-6">
                         <h3 className="text-lg font-medium text-gray-900 border-b pb-2">Steps to Reproduce</h3>
                         <div className="space-y-3">
                             {formData.stepsToReproduce.map((step, index) => (
                                 <div key={index} className="flex gap-3 items-start">
-                  <span className="flex-shrink-0 w-6 h-6 bg-gray-100 border border-gray-300 rounded-full text-xs flex items-center justify-center mt-2">
-                    {index + 1}
-                  </span>
+                                    <span className="flex-shrink-0 w-6 h-6 bg-gray-100 border border-gray-300 rounded-full text-xs flex items-center justify-center mt-2">
+                                        {index + 1}
+                                    </span>
                                     <input
                                         type="text"
                                         value={step}
@@ -532,7 +491,6 @@ const BugForm = ({ onBugCreated, projects = [] }) => {
                         </div>
                     </div>
 
-                    {/* Section 4: Environment & Tags */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         <div className="space-y-6">
                             <h3 className="text-lg font-medium text-gray-900 border-b pb-2">Environment Details</h3>
@@ -575,17 +533,16 @@ const BugForm = ({ onBugCreated, projects = [] }) => {
                         <div className="space-y-6">
                             <h3 className="text-lg font-medium text-gray-900 border-b pb-2">Tags & Attachments</h3>
 
-                            {/* Tags */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Tags
-                                </label>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Tags</label>
                                 <div className="flex gap-2 mb-2">
                                     <input
                                         type="text"
                                         value={newTag}
                                         onChange={(e) => setNewTag(e.target.value)}
-                                        onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleTagAdd())}
+                                        onKeyPress={(e) =>
+                                            e.key === 'Enter' && (e.preventDefault(), handleTagAdd())
+                                        }
                                         className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         placeholder="Add a tag (press Enter)"
                                     />
@@ -603,24 +560,21 @@ const BugForm = ({ onBugCreated, projects = [] }) => {
                                             key={index}
                                             className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm"
                                         >
-                      {tag}
+                                            {tag}
                                             <button
                                                 type="button"
                                                 onClick={() => handleTagRemove(tag)}
                                                 className="hover:text-blue-900"
                                             >
-                        ×
-                      </button>
-                    </span>
+                                                ×
+                                            </button>
+                                        </span>
                                     ))}
                                 </div>
                             </div>
 
-                            {/* Attachments */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Attachments
-                                </label>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Attachments</label>
                                 <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
                                     <input
                                         type="file"
@@ -633,25 +587,49 @@ const BugForm = ({ onBugCreated, projects = [] }) => {
                                         htmlFor="file-upload"
                                         className="flex flex-col items-center justify-center cursor-pointer"
                                     >
-                                        <svg className="w-8 h-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                        <svg
+                                            className="w-8 h-8 text-gray-400 mb-2"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                                            />
                                         </svg>
                                         <span className="text-sm text-gray-600">Click to upload files</span>
                                         <span className="text-xs text-gray-500">PNG, JPG, PDF up to 10MB</span>
                                     </label>
                                 </div>
 
-                                {/* Attachments list */}
                                 {formData.attachments.length > 0 && (
                                     <div className="mt-3 space-y-2">
                                         {formData.attachments.map((file, index) => (
-                                            <div key={index} className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2">
+                                            <div
+                                                key={index}
+                                                className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2"
+                                            >
                                                 <div className="flex items-center gap-2">
-                                                    <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                    <svg
+                                                        className="w-4 h-4 text-gray-500"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        viewBox="0 0 24 24"
+                                                    >
+                                                        <path
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            strokeWidth={2}
+                                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                                        />
                                                     </svg>
                                                     <span className="text-sm text-gray-700">{file.name}</span>
-                                                    <span className="text-xs text-gray-500">({(file.size / 1024).toFixed(1)} KB)</span>
+                                                    <span className="text-xs text-gray-500">
+                                                        ({(file.size / 1024).toFixed(1)} KB)
+                                                    </span>
                                                 </div>
                                                 <button
                                                     type="button"
@@ -668,7 +646,6 @@ const BugForm = ({ onBugCreated, projects = [] }) => {
                         </div>
                     </div>
 
-                    {/* Submit Buttons */}
                     <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200">
                         <button
                             type="button"
@@ -689,7 +666,12 @@ const BugForm = ({ onBugCreated, projects = [] }) => {
                                 </>
                             ) : (
                                 <>
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg
+                                        className="w-4 h-4"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                                     </svg>
                                     Create Bug Report
