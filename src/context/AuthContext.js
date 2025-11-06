@@ -1,4 +1,12 @@
+
 import React, { createContext, useState, useContext, useEffect } from 'react';
+
+// 🔧 Get API URL from environment variable
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
+// Debug: Log the API URL being used
+console.log('🔗 [AUTH CONTEXT] Using API URL:', API_URL);
+console.log('🔗 [AUTH CONTEXT] Environment:', process.env.REACT_APP_ENVIRONMENT || 'development');
 
 const AuthContext = createContext();
 
@@ -38,7 +46,11 @@ export const AuthProvider = ({ children }) => {
             if (token) {
                 log('Token found in localStorage, validating...', { tokenLength: token.length });
                 try {
-                    const response = await fetch('http://localhost:5000/api/auth/me', {
+                    // 🔧 FIXED: Use API_URL instead of localhost
+                    const url = `${API_URL}/api/auth/me`;
+                    log('Calling auth endpoint:', url);
+
+                    const response = await fetch(url, {
                         headers: {
                             'Authorization': `Bearer ${token}`
                         }
@@ -74,7 +86,11 @@ export const AuthProvider = ({ children }) => {
         log('Login attempt started', { email });
 
         try {
-            const response = await fetch('http://localhost:5000/api/auth/login', {
+            // 🔧 FIXED: Use API_URL instead of localhost
+            const url = `${API_URL}/api/auth/login`;
+            log('Calling login endpoint:', url);
+
+            const response = await fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -110,7 +126,11 @@ export const AuthProvider = ({ children }) => {
         log('Registration attempt started', { email: userData.email, username: userData.username });
 
         try {
-            const response = await fetch('http://localhost:5000/api/auth/register', {
+            // 🔧 FIXED: Use API_URL instead of localhost
+            const url = `${API_URL}/api/auth/register`;
+            log('Calling registration endpoint:', url);
+
+            const response = await fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -152,7 +172,11 @@ export const AuthProvider = ({ children }) => {
         log('Profile update attempt', profileData);
 
         try {
-            const response = await fetch('http://localhost:5000/api/auth/profile', {
+            // 🔧 FIXED: Use API_URL instead of localhost
+            const url = `${API_URL}/api/auth/profile`;
+            log('Calling profile update endpoint:', url);
+
+            const response = await fetch(url, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -183,7 +207,11 @@ export const AuthProvider = ({ children }) => {
         log('Password change attempt');
 
         try {
-            const response = await fetch('http://localhost:5000/api/auth/password', {
+            // 🔧 FIXED: Use API_URL instead of localhost
+            const url = `${API_URL}/api/auth/password`;
+            log('Calling password change endpoint:', url);
+
+            const response = await fetch(url, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -229,3 +257,5 @@ export const AuthProvider = ({ children }) => {
         </AuthContext.Provider>
     );
 };
+
+export default AuthContext;

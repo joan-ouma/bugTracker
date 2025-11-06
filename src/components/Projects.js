@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import CreateProjectBug from './CreateProjectBug';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
 
 const Projects = ({ user, onNavigate }) => {
     const [projects, setProjects] = useState([]);
@@ -33,7 +35,7 @@ const Projects = ({ user, onNavigate }) => {
         setLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/projects', {
+            const response = await fetch(`${API_URL}/api/projects`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -65,7 +67,7 @@ const Projects = ({ user, onNavigate }) => {
         e.preventDefault();
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/projects', {
+            const response = await fetch(`${API_URL}/api/projects`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -165,7 +167,7 @@ const Projects = ({ user, onNavigate }) => {
         if (window.confirm('Are you sure you want to delete this project? This action cannot be undone.')) {
             try {
                 const token = localStorage.getItem('token');
-                const response = await fetch(`http://localhost:5000/api/projects/${projectId}`, {
+                const response = await fetch(`${API_URL}/api/projects/${projectId}`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${token}`

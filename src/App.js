@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Header from './components/Header';
@@ -11,6 +12,13 @@ import Login from './components/Login';
 import Register from './components/Register';
 import ErrorBoundary from './components/ErrorBoundary';
 import ProjectBugs from './components/ProjectBugs';
+
+// 🔧 Get API URL from environment variable
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
+// Debug: Log the API URL being used
+console.log('🔗 [APP] Using API URL:', API_URL);
+console.log('🔗 [APP] Environment:', process.env.REACT_APP_ENVIRONMENT || 'development');
 
 // Debug mode
 const DEBUG = true;
@@ -33,7 +41,8 @@ const AppContent = () => {
         user: user ? 'logged in' : 'not logged in',
         loading,
         activeView,
-        authView
+        authView,
+        apiUrl: API_URL
     });
 
     // Redirect to login if not authenticated
@@ -55,6 +64,7 @@ const AppContent = () => {
             fetchBugs();
         }
     }, [activeView, user]);
+
     const fetchBugs = async () => {
         log('Starting bugs fetch');
         setBugsLoading(true);
@@ -62,7 +72,11 @@ const AppContent = () => {
             const token = localStorage.getItem('token');
             log('Fetching bugs with token', { tokenLength: token?.length });
 
-            const response = await fetch('http://localhost:5000/api/bugs', {
+            // 🔧 FIXED: Use API_URL instead of localhost
+            const url = `${API_URL}/api/bugs`;
+            log('Fetching from URL:', url);
+
+            const response = await fetch(url, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

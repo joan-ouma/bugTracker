@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
+
 
 const BugList = ({ bugs, loading, onBugDeleted, onBugUpdated, onRefresh, user }) => {
     const [filter, setFilter] = useState('all');
@@ -74,7 +77,7 @@ const BugList = ({ bugs, loading, onBugDeleted, onBugUpdated, onRefresh, user })
     const handleDelete = async (bugId) => {
         if (window.confirm('Are you sure you want to delete this bug?')) {
             try {
-                const response = await fetch(`http://localhost:5000/api/bugs/${bugId}`, {
+                const response = await fetch(`${API_URL}/api/bugs/${bugId}`, {
                     method: 'DELETE',
                 });
 
@@ -93,7 +96,7 @@ const BugList = ({ bugs, loading, onBugDeleted, onBugUpdated, onRefresh, user })
 
     const handleStatusChange = async (bugId, newStatus) => {
         try {
-            const response = await fetch(`http://localhost:5000/api/bugs/${bugId}`, {
+            const response = await fetch(`${API_URL}/api/bugs/${bugId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

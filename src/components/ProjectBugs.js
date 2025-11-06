@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
 
 const ProjectBugs = ({ user, onNavigate }) => {
     const [bugs, setBugs] = useState([]);
@@ -25,7 +27,7 @@ const ProjectBugs = ({ user, onNavigate }) => {
         console.log('Fetching bugs for project:', projectId);
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:5000/api/projects/${projectId}/bugs`, {
+            const response = await fetch(`${API_URL}/api/projects/${projectId}/bugs`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

@@ -1,4 +1,6 @@
+
 import React, { useState, useEffect } from 'react';
+import { API_URL } from '../config/api';
 
 const BugForm = ({ onBugCreated, projects = [] }) => {
     const [formData, setFormData] = useState({
@@ -161,7 +163,10 @@ const BugForm = ({ onBugCreated, projects = [] }) => {
                 dueDate: formData.dueDate || undefined
             };
 
-            const response = await fetch('http://localhost:5000/api/bugs', {
+            // ✅ This already uses API_URL from import - Good!
+            console.log('🐛 [BUG FORM] Creating bug at:', `${API_URL}/api/bugs`);
+
+            const response = await fetch(`${API_URL}/api/bugs`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -175,6 +180,7 @@ const BugForm = ({ onBugCreated, projects = [] }) => {
             }
 
             const newBug = await response.json();
+            console.log('✅ [BUG FORM] Bug created successfully:', newBug);
             onBugCreated(newBug);
             setSuccess('Bug reported successfully!');
 
@@ -209,6 +215,7 @@ const BugForm = ({ onBugCreated, projects = [] }) => {
             setTimeout(() => setSuccess(''), 3000);
 
         } catch (err) {
+            console.error('❌ [BUG FORM] Error creating bug:', err);
             setError(err.message);
         } finally {
             setLoading(false);
